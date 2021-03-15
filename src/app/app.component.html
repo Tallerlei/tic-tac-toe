@@ -1,12 +1,16 @@
 <div class="main">
-  <h2>TIC TAC TOE!</h2>
-  <div>{{player}}'s turn</div>
-  <div class="board">
-    <div *ngFor="let field of fields" class="field" [class.highlight]="field?.highlight" [class.x-marked]="field?.marked === 'x'"
-      [class.o-marked]="field?.marked === 'o'" (click)="fieldClicked($event, field)"></div>
+  <h1>TIC TAC TOE!</h1>
+  <h2>{{player}}'s turn</h2>
+  <div class="board-wrapper">
+    <div class="dummy"></div>
+    <div class="board">
+      <div *ngFor="let field of fields" class="field" [class.highlight]="field?.highlight"
+        [class.x-marked]="field?.marked === 'x'" [class.o-marked]="field?.marked === 'o'"
+        (click)="fieldClicked($event, field)"></div>
+    </div>
   </div>
   <div class="button-bar">
-    <button (click)="resetGame($event)">Reset</button>
+    <button (click)="resetGame($event)">New Game</button>
   </div>
   <div *ngIf="gameOver" class="result">
     <div *ngIf="!winner; else showWinner">
@@ -16,3 +20,4 @@
       <div>Player {{winner}} won!</div>
     </ng-template>
   </div>
+</div>

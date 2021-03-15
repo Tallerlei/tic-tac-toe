@@ -66,7 +66,6 @@ export class AppComponent {
     if (fields.length >= 3) {
       winnerCombination.forEach(combo => {
         if (combo.split('').every(i => {
-          console.log(i, 'included in? ', fields.includes(i));
           return fields.includes(parseInt(i, 10));
         })) {
           this.winnerCombo = combo;
