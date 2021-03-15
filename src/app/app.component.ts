@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 
+class Field {
+  marked: 'x' | 'o' | '';
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,4 +11,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'tic-tac-toe';
+  fields: Field[] = new Array(9);
+
+  constructor() {
+
+  }
 }
