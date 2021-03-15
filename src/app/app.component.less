@@ -1,12 +1,54 @@
-html, body {
-    height:100%;
-}
 .main {
-    height:100%;
-background-color: green;
+  height: 100%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .board {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  width: 80%;
+  height: 80%;
+  margin: 12px 0 12px 0;
+}
 
-    background-color: red;
+.field {
+  border: 1px solid black;
+  width: 33.33%;
+  height: 33.33%;
+  background-color: lightsalmon;
+}
+
+.x-marked {
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M1 0 L0 1 L99 100 L100 99' fill='black' /><path d='M0 99 L99 0 L100 1 L1 100' fill='black' /></svg>");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%, auto;
+}
+
+.o-marked {
+  background-color: black;
+  border-radius: 50%;
+}
+
+.highlight {
+  border-color: deepskyblue;
+  border-width: 5px;
+}
+
+.button-bar {
+  margin-bottom: 12px;
+}
+
+.result {
+  position: absolute;
+  top: 40%;
+  text-align: center;
+  background-color: white;
+  opacity: 0.8;
+  width: 100%;
+  font-size: 3.5em;
 }
