@@ -1,90 +1,152 @@
 import { Component } from '@angular/core';
 
+interface Player {
+  symbol: 'X' | 'O';
+  name: string;
+  score: number;
+}
+
 class Field {
-  marked: 'x' | 'o' | '';
-  highlight = false;
+  marked: 'X' | 'O' | '' = '';
+  highlight: boolean = false;
 }
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.less']
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'tic-tac-toe';
+  title = 'Enhanced Tic-Tac-Toe';
   fields: Field[] = [];
-  player: 'x' | 'o' = 'x';
+  currentPlayerSymbol: 'X' | 'O' = 'X';
+  
+  // Player management
+  players: Player[] = [
+    { symbol: 'X', name: 'Player 1', score: 0 },
+    { symbol: 'O', name: 'Player 2', score: 0 }
+  ];
 
-  winner: 'x' | 'o' = null;
-  winnerCombo: string = null;
-
-  gameOver = false;
+  winner: 'X' | 'O' | null = null;
+  winnerCombo: string | null = null;
+  gameOver: boolean = false;
+  isDraw: boolean = false;
+  totalGames: number = 0;
 
   constructor() {
+    this.initializeGame();
+  }
+
+  initializeGame(): void {
     this.initFields();
+    this.winner = null;
+    this.winnerCombo = null;
+    this.gameOver = false;
+    this.isDraw = false;
+    this.currentPlayerSymbol = 'X';
   }
 
   initFields(): void {
     this.fields = Array.from({ length: 9 }, () => new Field());
   }
 
-  fieldClicked(event, field: Field): void {
-    if (this.winner === null && field.marked !== 'x' && field.marked !== 'o') {
-      field.marked = this.player;
+  get currentPlayer(): Player {
+    return this.players.find(p => p.symbol === this.currentPlayerSymbol) || this.players[0];
+  }
+
+  fieldClicked(event: Event, field: Field): void {
+    if (this.gameOver || field.marked) {
+      return;
+    }
+
+    field.marked = this.currentPlayerSymbol;
+    this.checkForWinner();
+    
+    if (!this.gameOver) {
       this.togglePlayer();
-      this.checkForWinner();
     }
   }
 
   togglePlayer(): void {
-    this.player = this.player === 'x' ? 'o' : 'x';
+    this.currentPlayerSymbol = this.currentPlayerSymbol === 'X' ? 'O' : 'X';
   }
 
   checkForWinner(): void {
-    const xMarkedFields = [];
-    const oMarkedFields = [];
+    const markedFields = this.getMarkedFieldsBySymbol();
+    
+    // Check for winner
+    this.checkCombinations(markedFields.X, 'X');
+    this.checkCombinations(markedFields.O, 'O');
+    
+    // Check for draw
+    if (!this.winner && markedFields.X.length + markedFields.O.length === 9) {
+      this.gameOver = true;
+      this.isDraw = true;
+    }
+  }
 
-    // add indizes to array
+  private getMarkedFieldsBySymbol(): { X: number[], O: number[] } {
+    const result = { X: [], O: [] };
+    
     this.fields.forEach((field, index) => {
-      if (field.marked) {
-        if (field.marked === 'x') {
-          xMarkedFields.push(index);
-        } else {
-          oMarkedFields.push(index);
-        }
+      if (field.marked === 'X') {
+        result.X.push(index);
+      } else if (field.marked === 'O') {
+        result.O.push(index);
       }
     });
-    this.checkCombinations(xMarkedFields, 'x');
-    this.checkCombinations(oMarkedFields, 'o');
-    // check if one has at least three indizes
-    if (xMarkedFields.length + oMarkedFields.length === 9) {
-      this.gameOver = true;
-    }
+    
+    return result;
   }
-  checkCombinations(fields, winner): void {
-    const winnerCombination = ['012', '345', '678', '036', '147', '258', '048', '246'];
-    if (fields.length >= 3) {
-      winnerCombination.forEach(combo => {
-        if (combo.split('').every(i => {
-          return fields.includes(parseInt(i, 10));
-        })) {
-          this.winnerCombo = combo;
-          this.fields.forEach((field, index) => {
-            if (this.winnerCombo.split('').includes(index.toString())) {
-              field.highlight = true;
-            }
-          });
-          this.winner = winner;
-          this.gameOver = true;
-        }
-      });
-    }
-  }
-  resetGame(event): void {
-    this.initFields();
-    this.winner = null;
-    this.winnerCombo = null;
-    this.gameOver = false;
 
+  checkCombinations(markedFields: number[], playerSymbol: 'X' | 'O'): void {
+    const winningCombinations = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+      [0, 4, 8], [2, 4, 6] // Diagonals
+    ];
+
+    if (markedFields.length < 3) return;
+
+    for (const combination of winningCombinations) {
+      if (combination.every(index => markedFields.includes(index))) {
+        this.handleWinner(playerSymbol, combination);
+        break;
+      }
+    }
+  }
+
+  private handleWinner(playerSymbol: 'X' | 'O', winningCombination: number[]): void {
+    this.winner = playerSymbol;
+    this.winnerCombo = winningCombination.join('');
+    this.gameOver = true;
+    
+    // Highlight winning fields
+    winningCombination.forEach(index => {
+      this.fields[index].highlight = true;
+    });
+    
+    // Update score
+    const winningPlayer = this.players.find(p => p.symbol === playerSymbol);
+    if (winningPlayer) {
+      winningPlayer.score++;
+    }
+    
+    this.totalGames++;
+  }
+
+  resetGame(event?: Event): void {
+    this.initializeGame();
+  }
+
+  resetScores(): void {
+    this.players.forEach(player => player.score = 0);
+    this.totalGames = 0;
+  }
+
+  updatePlayerName(playerIndex: number, newName: string): void {
+    if (playerIndex >= 0 && playerIndex < this.players.length && newName.trim()) {
+      this.players[playerIndex].name = newName.trim();
+    }
   }
 }

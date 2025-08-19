@@ -1,23 +1,78 @@
 <div class="main">
-  <h1>TIC TAC TOE!</h1>
-  <h2>{{player}}'s turn</h2>
+  <!-- Header -->
+  <header class="game-header">
+    <h1>{{ title }}</h1>
+    
+    <!-- Player Names and Scores -->
+    <div class="players-section">
+      <div class="player-info" 
+           *ngFor="let player of players; let i = index"
+           [class.active]="player.symbol === currentPlayerSymbol && !gameOver">
+        <div class="player-name-container">
+          <input type="text" 
+                 [value]="player.name" 
+                 (blur)="updatePlayerName(i, $event.target.value)"
+                 (keyup.enter)="updatePlayerName(i, $event.target.value)"
+                 class="player-name-input"
+                 maxlength="12">
+          <span class="player-symbol">({{ player.symbol }})</span>
+        </div>
+        <div class="player-score">Score: {{ player.score }}</div>
+      </div>
+    </div>
+
+    <!-- Game Status -->
+    <div class="game-status">
+      <span *ngIf="!gameOver" class="current-turn">
+        {{ currentPlayer.name }}'s Turn
+      </span>
+    </div>
+  </header>
+
+  <!-- Game Board -->
   <div class="board-wrapper">
     <div class="dummy"></div>
     <div class="board">
-      <div *ngFor="let field of fields" class="field" [class.highlight]="field?.highlight"
-        [class.x-marked]="field?.marked === 'x'" [class.o-marked]="field?.marked === 'o'"
-        (click)="fieldClicked($event, field)"></div>
+      <div *ngFor="let field of fields; let i = index" 
+           class="field" 
+           [class.highlight]="field?.highlight"
+           [class.x-marked]="field?.marked === 'X'" 
+           [class.o-marked]="field?.marked === 'O'"
+           [class.clickable]="!gameOver && !field.marked"
+           (click)="fieldClicked($event, field)">
+        <div class="field-content">
+          <span *ngIf="field.marked" class="mark">{{ field.marked }}</span>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="button-bar">
-    <button (click)="resetGame($event)">New Game</button>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="btn btn-primary" (click)="resetGame($event)">New Game</button>
+    <button class="btn btn-secondary" (click)="resetScores()">Reset Scores</button>
   </div>
-  <div *ngIf="gameOver" class="result">
-    <div *ngIf="!winner; else showWinner">
-      GAME OVER!
+
+  <!-- Game Over Modal -->
+  <div *ngIf="gameOver" class="game-result-overlay">
+    <div class="game-result">
+      <div *ngIf="isDraw; else showWinner" class="result-content">
+        <h2>It's a Draw! 🤝</h2>
+        <p>Great game!</p>
+      </div>
+      <ng-template #showWinner>
+        <div class="result-content">
+          <h2>🎉 {{ currentPlayer.name }} Wins! 🎉</h2>
+          <p>Player {{ winner }} is victorious!</p>
+        </div>
+      </ng-template>
+      <button class="btn btn-large" (click)="resetGame($event)">Play Again</button>
     </div>
-    <ng-template #showWinner>
-      <div>Player {{winner}} won!</div>
-    </ng-template>
+  </div>
+
+  <!-- Game Statistics -->
+  <div class="game-stats" *ngIf="totalGames > 0">
+    <h3>Game Statistics</h3>
+    <p>Total Games: {{ totalGames }}</p>
   </div>
 </div>
