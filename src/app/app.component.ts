@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 interface Player {
   symbol: 'X' | 'O';
@@ -13,6 +15,8 @@ class Field {
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './app.component.html',
   styles: [`
     .main {
@@ -424,7 +428,7 @@ export class AppComponent {
   }
 
   private getMarkedFieldsBySymbol(): { X: number[], O: number[] } {
-    const result = { X: [], O: [] };
+    const result: { X: number[], O: number[] } = { X: [], O: [] };
     
     this.fields.forEach((field, index) => {
       if (field.marked === 'X') {
@@ -480,11 +484,5 @@ export class AppComponent {
   resetScores(): void {
     this.players.forEach(player => player.score = 0);
     this.totalGames = 0;
-  }
-
-  updatePlayerName(playerIndex: number, newName: string): void {
-    if (playerIndex >= 0 && playerIndex < this.players.length && newName.trim()) {
-      this.players[playerIndex].name = newName.trim();
-    }
   }
 }

@@ -10,9 +10,7 @@
            [class.active]="player.symbol === currentPlayerSymbol && !gameOver">
         <div class="player-name-container">
           <input type="text" 
-                 [value]="player.name" 
-                 (blur)="updatePlayerName(i, $event.target.value)"
-                 (keyup.enter)="updatePlayerName(i, $event.target.value)"
+                 [(ngModel)]="player.name" 
                  class="player-name-input"
                  maxlength="12">
           <span class="player-symbol">({{ player.symbol }})</span>

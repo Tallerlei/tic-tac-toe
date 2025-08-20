@@ -1,8 +1,21 @@
 # Enhanced Tic-Tac-Toe
 
-A modern, beautiful, and feature-rich tic-tac-toe game built with Angular, featuring a stunning UI, player customization, score tracking, and smooth animations.
+A modern, beautiful, and feature-rich tic-tac-toe game built with Angular 18, featuring full Node.js 22 support, stunning UI, player customization, score tracking, and smooth animations.
 
 ![Enhanced Tic-Tac-Toe](screenshots/enhanced-tic-tac-toe-winner.png)
+
+## 🚀 Node.js 22 Ready!
+
+✅ **Fully Compatible with Node.js 22**  
+✅ **Latest Angular 18.2.0**  
+✅ **Modern Standalone Components**  
+✅ **Updated Dependencies for Current Node Versions**
+
+## 🛠️ Requirements
+
+- **Node.js**: 18.x, 20.x, or **22.x** (latest supported!)
+- **npm**: 8.x or higher
+- **Modern Browser**: Chrome, Firefox, Safari, or Edge
 
 ## ✨ Features
 
